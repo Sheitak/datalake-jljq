@@ -4,9 +4,9 @@ This project is part of a study into the creation of a Data Lake, and focuses on
 
 **Maintainers**
 
-- [Johan Vertut]()
-- [Louis Bayle]()
-- [Jules Mekontso]()
+- [Johan Vertut](https://github.com/)
+- [Louis Bayle](https://github.com/LouisBDev19)
+- [Jules Mekontso](https://github.com/julesauffred)
 - [Quentin Moreau](https://github.com/Sheitak)
 
 ### Apache-Airflow Docker
