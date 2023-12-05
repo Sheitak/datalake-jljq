@@ -51,6 +51,6 @@ localhost:8080 or IP:8080
 
 Airflow Credentials
 ```
-usename: airflow
+username: airflow
 password: airflow
 ```
