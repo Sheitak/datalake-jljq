@@ -1,9 +1,7 @@
-### Example user template template
-### Example user template
-
-# Project Ignore
+# Data Lake Project Ignore
 logs
 config
+spark/java_opts.txt
 
 # IntelliJ project files
 .idea

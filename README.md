@@ -4,16 +4,26 @@ This project is part of a study into the creation of a Data Lake, and focuses on
 
 **Maintainers**
 
-- [Johan Vertut](https://github.com/)
+- [Johan Vertut](https://github.com/Nanificateur)
 - [Louis Bayle](https://github.com/LouisBDev19)
 - [Jules Mekontso](https://github.com/julesauffred)
 - [Quentin Moreau](https://github.com/Sheitak)
 
+### Starting Project
+
+Clone this repository and place yourself inside it.
+
+You can copy ``.env.example`` file to ``.env`` and replace the essential information.
+
 ### Apache-Airflow Docker
 
-Refer to the source on the official airflow website for a clean installation with Docker
+Refer to the source on the official airflow website for a clean installation with Docker.
 
 Source : https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
+
+For creating Docker File with packages.
+
+Source : https://airflow.apache.org/docs/docker-stack/build.html#example-of-adding-airflow-provider-package-and-apt-package
 
 **1. Initializing Environment**
 
