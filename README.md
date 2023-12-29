@@ -17,13 +17,9 @@ You can copy ``.env.example`` file to ``.env`` and replace the essential informa
 
 ### Apache-Airflow Docker
 
-Refer to the source on the official airflow website for a clean installation with Docker.
+Refer to the [Airflow With Docker](https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html) on the official airflow website for a clean installation with Docker.
 
-Source : https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
-
-For creating Docker File with packages.
-
-Source : https://airflow.apache.org/docs/docker-stack/build.html#example-of-adding-airflow-provider-package-and-apt-package
+Refer to the [Airflow Package In Docker](https://airflow.apache.org/docs/docker-stack/build.html#example-of-adding-airflow-provider-package-and-apt-package) For creating Docker File with packages.
 
 **1. Initializing Environment**
 
@@ -38,7 +34,7 @@ Initialize Database
 docker compose up airflow-init
 ```
 
-Run Airflow
+Run Airflow Set-Up
 ```
 docker compose up -d
 ```
@@ -64,3 +60,14 @@ Airflow Credentials
 username: airflow
 password: airflow
 ```
+
+### API Used
+
+- [Alpha Vantage](https://www.alphavantage.co/documentation/)
+
+### Resources
+
+- [Airflow Documentation](https://airflow.apache.org/docs/apache-airflow/stable/index.html)
+- [Apache Spark Documentation](https://spark.apache.org/docs/latest/)
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>

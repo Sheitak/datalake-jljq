@@ -1,4 +1,5 @@
 requests~=2.31.0
-pyspark~=3.5.0
+pyspark~=3.0.3
 apache-airflow-providers-apache-spark==4.5.0
-apache-airflow-providers-amazon==8.13.0
+python-dotenv~=1.0.0
+boto3~=1.29.4
