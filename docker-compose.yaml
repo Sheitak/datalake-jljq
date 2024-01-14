@@ -100,30 +100,6 @@ services:
       start_period: 30s
     restart: always
 
-  spark:
-    image: apache/spark-py:latest
-    ports:
-      - "4040:4040"
-    volumes:
-      - ${AIRFLOW_PROJ_DIR:-.}/spark:/opt/spark/work-dir
-    environment:
-      - SPARK_MASTER_HOST=spark-master
-      - SPARK_CONN_ID=spark_default
-      - SPARK_CONN_TYPE=spark
-      - SPARK_CONN_HOST=spark-master
-      - SPARK_CONN_PORT=7077
-    depends_on:
-      - spark-master
-    networks:
-      - airflow-network
-
-  spark-master:
-    image: apache/spark:latest
-    ports:
-      - "7077:7077"
-    networks:
-      - airflow-network
-
   airflow-webserver:
     <<: *airflow-common
     command: webserver
@@ -173,10 +149,6 @@ services:
       # Required to handle warm shutdown of the celery workers properly
       # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
       DUMB_INIT_SETSID: "0"
-      SPARK_CONN_ID: spark_default
-      SPARK_CONN_TYPE: spark
-      SPARK_CONN_HOST: spark-master
-      SPARK_CONN_PORT: 7077
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
@@ -311,8 +283,84 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+  ######################################################
+  # SPARK SERVICES
+  ######################################################
+#  spark-master:
+#    image: bitnami/spark:latest
+#    # Run container as root container: https://docs.bitnami.com/tutorials/work-with-non-root-containers/
+#    user: root
+#    container_name: spark-master
+#    ports:
+#      - "7077:7077"
+#    environment:
+#      - SPARK_MODE=master
+#    networks:
+#      - airflow-network
+#
+#  spark-worker-1:
+#    image: bitnami/spark:latest
+#    container_name: spark-worker-1
+#    ports:
+#      - "4040:4040"
+#    volumes:
+#      - ${AIRFLOW_PROJ_DIR:-.}/spark:/opt/spark/work-dir
+#    environment:
+#      - SPARK_MODE=worker
+#      - SPARK_MASTER_URL=spark://spark-master:7077
+#      - SPARK_WORKER_MEMORY=1G
+#      - SPARK_WORKER_CORES=1
+#    depends_on:
+#      - spark-master
+#    networks:
+#      - airflow-network
+
+#  spark-master:
+#    image: apache/spark-py:latest
+#    container_name: spark-master
+#    ports:
+#      - "7077:7077"
+#    environment:
+#      - SPARK_MODE=master
+#    networks:
+#      - airflow-network
+#
+#  spark-worker-1:
+#    image: apache/spark-py:latest
+#    container_name: spark-worker-1
+#    ports:
+#      - "4040:4040"
+#    volumes:
+#      - ${AIRFLOW_PROJ_DIR:-.}/spark:/opt/spark/work-dir
+#    environment:
+#      - SPARK_MODE=worker
+#      - SPARK_MASTER_URL=spark://spark-master:7077
+#      - SPARK_MASTER_HOST=spark-master
+#      - SPARK_CONN_ID=spark_default
+#      - SPARK_CONN_TYPE=spark
+#      - SPARK_CONN_HOST=spark-master
+#      - SPARK_CONN_PORT=7077
+#      - HADOOP_CONF_DIR=/hadoop-conf
+#      - YARN_CONF_DIR=/yarn-conf
+#    depends_on:
+#      - spark-master
+#    networks:
+#      - airflow-network
+
+#  jupyter-spark:
+#    image: jupyter/pyspark-notebook:lastest
+#    networks:
+#      - airflow-network
+#    ports:
+#      - "8888:8888"
+#      - "4040-4080:4040-4080"
+#    volumes:
+#      - ../notebooks:/home/jovyan/work/notebooks/
+#      - ../spark/resources/data:/home/jovyan/work/data/
+#      - ../spark/resources/jars:/home/jovyan/work/jars/
+
 volumes:
   postgres-db-volume:
 
-networks:
-  airflow-network:
+#networks:
+#  airflow-network:

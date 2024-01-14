@@ -1,5 +1,9 @@
 from pyspark.sql import SparkSession
 
+# Configuration
+# os.environ["HADOOP_HOME"] = os.environ.get('HADOOP_HOME')
+# os.environ["HADOOP_CONF_DIR"] = os.path.join(os.environ["HADOOP_HOME"], "etc/hadoop")
+
 # Initialisation
 spark = SparkSession.builder.appName("TransformAlphaVantageSpark").getOrCreate()
 

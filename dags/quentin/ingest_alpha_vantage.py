@@ -1,12 +1,12 @@
 import os
+import boto3
+import requests
+
 from datetime import datetime, timedelta
 from io import StringIO
-
-import boto3
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
-import requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,6 +18,26 @@ s3_bucket_name = 'datalake-3il-jljq'
 
 api_key_alpha_vantage = os.environ.get('API_KEY_ALPHA_VANTAGE')
 owner = os.environ.get('OWNER')
+
+# Configuration Spark
+spark_config = {
+    'appName': 'TransformDataSpark',
+    'conn_id': 'spark_default',
+    'spark.master': 'spark://spark-master:7077',
+
+    # Ajoutez d'autres configurations Spark si nécessaire
+    # 'spark.executor.memory': '4 g', # Mémoire par exécuteur
+    # 'spark.executor.cores': 3, # Cœurs par exécuteur
+    # 'spark.driver.memory': '2g', # Mémoire pour le driver (votre application principale)
+    # 'spark.driver.cores': 2,  # Cœurs pour le driver
+    # 'spark.default.parallelism' : 10, # Nombre de partitions par défaut
+    # 'spark.sql.shuffle.partitions': 10, # Partitions pour les opérations de shuffle
+    # 'spark.dynamicAllocation.enabled' : 'false' # Désactiver l'allocation dynamique pour un mode local
+
+    # 'spark.yarn.appMasterEnv.SPARK_HOME': '/usr/local/spark',  # Remplacez par le chemin correct
+    # 'spark.yarn.appMasterEnv.HADOOP_CONF_DIR': '/usr/local/hadoop/etc/hadoop',  # Remplacez par le chemin correct
+    # 'spark.yarn.appMasterEnv': '/conf/spark-env.sh',
+}
 
 # Définition des paramètres
 default_args = {
@@ -51,15 +71,10 @@ test_env_task = PythonOperator(
 )
 
 
-def extract_stock_data():
-    s3_object_key = 'quentin/alpha-vantage/data/stock.csv'
-    alpha_vintage_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=AAA&apikey={api_key_alpha_vantage}'
-
-
 # https://www.alphavantage.co/documentation/
 # Obtenir les nouveaux sentiments du marché boursier ainsi que quelques métrics.
 def extract_sentiment_news_data():
-    s3_object_key = 'quentin/alpha-vantage/data/news-sentiment.csv'
+    s3_path = 'quentin/alpha-vantage/data/news-sentiment.csv'
     alpha_vintage_url = f'https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey={api_key_alpha_vantage}'
     response = requests.get(alpha_vintage_url)
     data = response.text
@@ -77,9 +92,9 @@ def extract_sentiment_news_data():
     s3_client = session.client('s3')
 
     # Chargement des données dans le bucket S3
-    s3_client.put_object(Body=csv_data.getvalue(), Bucket=s3_bucket_name, Key=s3_object_key)
+    s3_client.put_object(Body=csv_data.getvalue(), Bucket=s3_bucket_name, Key=s3_path)
 
-    print(f"Données stockées avec succès dans S3 : {s3_bucket_name}/{s3_object_key}")
+    print(f"Données stockées avec succès dans S3 : {s3_bucket_name}/{s3_path}")
 
 
 # Opérateur pour exécuter la fonction d'extraction et de téléchargement
@@ -90,13 +105,13 @@ ingest_data_task = PythonOperator(
 )
 
 # Transformation avec Apache Spark
-transform_spark_task = SparkSubmitOperator(
-    task_id='transform_spark_task',
+transform_data_task = SparkSubmitOperator(
+    task_id='transform_data_task',
     application='transform_alpha_vantage.py',
-    conn_id='spark_default',
     verbose=True,
+    conf=spark_config,
     dag=dag,
 )
 
 # Définir l'ordre des tâches
-test_env_task >> ingest_data_task >> transform_spark_task
+test_env_task >> ingest_data_task >> transform_data_task

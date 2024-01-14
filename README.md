@@ -63,6 +63,9 @@ password: airflow
 
 ### API Used
 
+- [CoinMarketCap]()
+- [Coinranking]()
+- [CoinGecko]()
 - [Alpha Vantage](https://www.alphavantage.co/documentation/)
 
 ### Resources
